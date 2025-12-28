@@ -1,3 +1,5 @@
+import unittest
+
 class Account:
     def __init__(self, user_id: str, initial_deposit: float) -> None:
         self.user_id = user_id
@@ -70,14 +72,53 @@ class Account:
         prices = {'AAPL': 150.0, 'TSLA': 700.0, 'GOOGL': 2800.0}
         return prices.get(symbol, 0.0)
 
-# Example Usage
+class TestAccount(unittest.TestCase):
+    def setUp(self):
+        self.account = Account('user123', 1000.0)
+
+    def test_initial_balance(self):
+        self.assertEqual(self.account.balance, 1000.0)
+
+    def test_deposit(self):
+        self.account.deposit(500.0)
+        self.assertEqual(self.account.balance, 1500.0)
+
+    def test_withdraw(self):
+        self.account.withdraw(200.0)
+        self.assertEqual(self.account.balance, 800.0)
+
+    def test_withdraw_insufficient_funds(self):
+        with self.assertRaises(ValueError):
+            self.account.withdraw(1100.0)
+
+    def test_buy_stock(self):
+        self.account.buy_stock('AAPL', 5)
+        self.assertEqual(self.account.balance, 1000.0 - 5 * 150.0)
+        self.assertEqual(self.account.get_holdings().get('AAPL'), 5)
+
+    def test_buy_stock_insufficient_funds(self):
+        with self.assertRaises(ValueError):
+            self.account.buy_stock('AAPL', 10)
+
+    def test_sell_stock(self):
+        self.account.buy_stock('AAPL', 5)
+        self.account.sell_stock('AAPL', 2)
+        self.assertEqual(self.account.get_holdings().get('AAPL'), 3)
+        self.assertEqual(self.account.balance, 1000.0 - 5 * 150.0 + 2 * 150.0)
+
+    def test_sell_stock_not_enough_shares(self):
+        with self.assertRaises(ValueError):
+            self.account.sell_stock('AAPL', 10)
+
+    def test_get_transactions(self):
+        self.account.deposit(500.0)
+        transactions = self.account.get_transactions()
+        self.assertEqual(len(transactions), 2)  # Initial deposit + deposit
+
+    def test_get_profit_loss(self):
+        self.account.deposit(500.0)
+        self.account.buy_stock('AAPL', 5)
+        self.assertGreater(self.account.get_profit_loss(), 0)
+
 if __name__ == '__main__':
-    account = Account('user123', 1000.0)
-    account.deposit(500.0)
-    account.withdraw(200.0)
-    account.buy_stock('AAPL', 5)
-    account.sell_stock('AAPL', 2)
-    print('Portfolio Value:', account.get_total_portfolio_value())
-    print('Profit or Loss:', account.get_profit_loss())
-    print('Holdings:', account.get_holdings())
-    print('Transactions:', account.get_transactions())
+    unittest.main()

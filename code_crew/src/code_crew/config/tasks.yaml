@@ -3,7 +3,7 @@ design_task:
     Take the high level requirements described here and prepare a detailed design for the engineer;
     everything should be in 1 python module, but outline the classes and methods in the module.
     Here are the requirements: {requirements}
-    IMPORTANT: Only output the design in markdown format, laying out in detail the classes and functions in the module, describing the functionality.
+    IMPORTANT: DO NOT write python code. ONLY output the design in MARKDOWN format, laying out in detail the classes and functions in the module, describing the functionality.
   expected_output: >
     A detailed design for the engineer, identifying the classes and functions in the module.
   agent: team_lead
@@ -24,18 +24,45 @@ backend_task:
 
 frontend_task:
   description: >
-    Write a gradio UI in a module app.py that demonstrates the given backend class in {module_name}.
-    Assume there is only 1 user, and keep the UI very simple indeed - just a prototype or demo.
-    Here are the requirements: {requirements}
+    Write a Gradio UI in a module app.py that demonstrates the given backend class in {module_name}.
+
+    HARD CONSTRAINTS:
+    - You MUST use gr.Blocks (NOT gr.Interface).
+    - The UI will have multiple buttons and callbacks.
+    - Do NOT use gr.Interface anywhere.
+    - The code must run without errors on first execution.
+
+    UI REQUIREMENTS:
+    - Assume only 1 user (global state is acceptable).
+    - Keep the UI very simple — this is a prototype/demo.
+    - Each backend action should be triggered by a separate button.
+    - All outputs should be shown in a single output textbox.
+
+    BACKEND:
+    - Import the backend class from {module_name}.
+    - Instantiate the backend object explicitly.
+
+    QUALITY BAR:
+    - The code should follow correct Gradio API usage.
+    - Avoid deprecated or invalid Gradio patterns.
+    - Prefer clarity over cleverness.
+
+    Here are the functional requirements:
+    {requirements}
+
   expected_output: >
-    A gradio UI in module app.py that demonstrates the given backend class.
-    The file should be ready so that it can be run as-is, in the same directory as the backend module, and it should import the backend class from {module_name}.
-    IMPORTANT: Output ONLY the raw Python code without any markdown formatting, code block delimiters, or backticks.
-    The output should be valid Python code that can be directly saved to a file and executed.
+    A valid Python file app.py that:
+    - Uses gr.Blocks correctly
+    - Can be run directly with `python app.py`
+    - Imports the backend class from {module_name}
+    - Contains NO markdown, backticks, or commentary
+    - Contains ONLY executable Python code
+
   agent: frontend_engg
   context:
     - backend_task
   output_file: output/app.py
+
 
 testing_task:
   description: >
