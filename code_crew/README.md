@@ -1,6 +1,6 @@
 # Multi-Agent Portfolio Management & Trading System (CrewAI PoC)
 
-I built this project while taking Ed Donner's course on Agentic AI to learn and experiment with the **CrewAI framework** by implementing a simple **portfolio management and trading system** using multiple collaborating agents.
+I built this project following Ed Donner's course on Agentic AI to learn and experiment with the **CrewAI framework** by implementing a simple **portfolio management and trading system** using multiple collaborating agents.
 
 The focus is on **agent orchestration**, role separation, and iterative development — not on building a production-grade trading platform.
 
